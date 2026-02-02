@@ -1,5 +1,79 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(cors());
+app.use(express.json());
+
+// Serve frontend
+app.use(express.static(path.join(__dirname, "frontend")));
+
+// Interview answers (backend version)
+const qaDatabase = [
+  {
+    keywords: ["life story", "background", "about you"],
+    answer:
+      "I’m an engineering student from IIT (ISM) Dhanbad with a strong interest in machine learning, data-driven systems, and applied problem-solving. Over the last few years, I’ve worked on ML, analytics, and software projects while building a habit of learning technologies independently and shipping working solutions. I’m now focused on developing production-oriented AI systems and growing as an engineer in fast-moving environments."
+  },
+  {
+    keywords: ["superpower", "strength"],
+    answer:
+      "My strongest skill is structured problem-solving. I break vague or complex problems into clear components and move forward with practical solutions."
+  },
+  {
+    keywords: ["grow", "improve"],
+    answer:
+      "I want to grow in machine learning systems design, user-facing AI applications, and fast decision-making in high-ownership environments."
+  },
+  {
+    keywords: ["misconception"],
+    answer:
+      "People sometimes think I’m reserved, but I’m highly analytical and prefer clarity before speaking."
+  },
+  {
+    keywords: ["boundaries", "limits"],
+    answer:
+      "I push my limits by taking ownership of problems slightly beyond my current skill set and closing gaps through focused execution."
+  }
+];
+
+function findBestAnswer(question) {
+  const text = question.toLowerCase();
+  let bestMatch = null;
+  let maxScore = 0;
+
+  qaDatabase.forEach(item => {
+    let score = 0;
+    item.keywords.forEach(keyword => {
+      if (text.includes(keyword)) score++;
+    });
+    if (score > maxScore) {
+      maxScore = score;
+      bestMatch = item.answer;
+    }
+  });
+
+  return bestMatch || "That’s a thoughtful question. I approach it through reflection and continuous improvement.";
+}
+
+app.post("/api/ask", (req, res) => {
+  const { question } = req.body;
+  const answer = findBestAnswer(question || "");
+  res.json({ answer });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+/*import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import path from "path";
@@ -106,6 +180,6 @@ Profile:
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
+});*/
 
 
