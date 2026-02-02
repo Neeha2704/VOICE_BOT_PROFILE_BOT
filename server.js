@@ -1,73 +1,5 @@
 import express from "express";
 import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "frontend")));
-
-// Fixed answers (startup-ready)
-const answers = [
-  {
-    keywords: ["life story", "background", "about you"],
-    answer:
-      "I’m an engineering student from IIT (ISM) Dhanbad with a strong interest in machine learning, data-driven systems, and applied problem-solving. Over the last few years, I’ve worked on ML, analytics, and software projects while building a habit of learning technologies independently and shipping working solutions."
-  },
-  {
-    keywords: ["superpower", "strength"],
-    answer:
-      "My strongest skill is structured problem-solving. I break vague or complex problems into clear components, identify what actually matters, and move forward with practical solutions instead of over-engineering."
-  },
-  {
-    keywords: ["grow", "improve"],
-    answer:
-      "I want to grow in building deeper machine learning systems, designing reliable user-facing AI applications, and improving speed and decision-making in fast-execution environments."
-  },
-  {
-    keywords: ["misconception", "coworkers"],
-    answer:
-      "Some people assume I’m reserved because I don’t speak impulsively. In reality, I’m highly analytical and prefer understanding problems clearly before contributing."
-  },
-  {
-    keywords: ["boundaries", "limits"],
-    answer:
-      "I push my limits by taking ownership of problems slightly beyond my skill level and closing the gap through focused learning and execution."
-  }
-];
-
-app.post("/api/ask", (req, res) => {
-  const question = req.body.question.toLowerCase();
-
-  let reply =
-    "That’s a thoughtful question. I approach it by breaking problems down clearly and iterating toward practical solutions.";
-
-  for (const item of answers) {
-    if (item.keywords.some(k => question.includes(k))) {
-      reply = item.answer;
-      break;
-    }
-  }
-
-  res.json({ answer: reply });
-});
-
-// Serve frontend
-app.get("*", (_, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-/*import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import path from "path";
@@ -174,5 +106,6 @@ Profile:
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});*/
+});
+
 
